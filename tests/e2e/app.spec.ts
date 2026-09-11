@@ -13,6 +13,17 @@ test('understands the product and searches a region', async ({ page }) => {
   await expect(page.getByRole('heading', { name: 'Neckar-Schatzmarkt' })).toHaveCount(0)
 })
 
+test('sorts nearby markets by distance after location is enabled', async ({ page, context }) => {
+  await context.grantPermissions(['geolocation'])
+  await context.setGeolocation({ latitude: 48.4914, longitude: 9.2107 })
+  await page.reload()
+
+  await page.getByRole('button', { name: /In meiner Nähe suchen/ }).click()
+  await expect(page.getByText(/Standort aktiv/)).toBeVisible()
+  await expect(page.locator('.market-card h3').first()).toHaveText('Reutlinger Fundgrube')
+  await expect(page.locator('.market-card h3').nth(1)).toHaveText('Franzviertel-Flohmarkt')
+})
+
 test('favorite survives filter interaction even when localStorage is blocked', async ({ page }) => {
   await page.addInitScript(() => {
     Object.defineProperty(window, 'localStorage', {

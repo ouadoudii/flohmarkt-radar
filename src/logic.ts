@@ -41,6 +41,7 @@ export function filterMarkets({
 }) {
   const q = normalize(query)
   const todayIso = today.toISOString().slice(0, 10)
+  const byDate = (a: Market, b: Market) => a.date.localeCompare(b.date) || a.startTime.localeCompare(b.startTime)
 
   return markets
     .filter((market) => {
@@ -55,7 +56,12 @@ export function filterMarkets({
       }
       return true
     })
-    .sort((a, b) => a.date.localeCompare(b.date) || a.startTime.localeCompare(b.startTime))
+    .sort((a, b) => {
+      if (!location) return byDate(a, b)
+      const distanceA = distanceKm(location, { latitude: a.latitude, longitude: a.longitude })
+      const distanceB = distanceKm(location, { latitude: b.latitude, longitude: b.longitude })
+      return distanceA - distanceB || byDate(a, b)
+    })
 }
 
 export function formatMarketDate(date: string) {
