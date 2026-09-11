@@ -21,6 +21,27 @@ describe('market filtering', () => {
     expect(result.map((market) => market.id)).toEqual(['stuttgart-karlsplatz'])
   })
 
+  it('limits weekend results to the current or next weekend only', () => {
+    const result = filterMarkets({
+      markets: buildMarkets(today),
+      query: '',
+      dateFilter: 'weekend',
+      favoritesOnly: false,
+      favorites: new Set(),
+      location: null,
+      radius: null,
+      today,
+    })
+
+    expect(result.map((market) => market.id)).toEqual([
+      'radolfzell-altstadtfest-2026',
+      'stuttgart-karlsplatz',
+      'esslingen-neckar',
+    ])
+    expect(result.some((market) => market.id === 'konstanz-georg-elser-platz-2026')).toBe(false)
+    expect(result.some((market) => market.id === 'tuebingen-franzviertel')).toBe(false)
+  })
+
   it('sorts nearby results by distance when location is active', () => {
     const result = filterMarkets({
       markets,
