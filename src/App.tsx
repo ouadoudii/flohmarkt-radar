@@ -20,6 +20,10 @@ function formatVerifiedAt(value: string) {
   }).format(new Date(`${value}T12:00:00`))
 }
 
+function shareText(market: Market) {
+  return `${market.name} – ${formatMarketDate(market.date)}, ${market.startTime}–${market.endTime} Uhr · ${market.venue}, ${market.postalCode} ${market.city}`
+}
+
 export default function App() {
   const [query, setQuery] = useState('')
   const [dateFilter, setDateFilter] = useState<DateFilter>('all')
@@ -29,6 +33,7 @@ export default function App() {
   const [radius, setRadius] = useState<number | null>(null)
   const [locationStatus, setLocationStatus] = useState('')
   const [selected, setSelected] = useState<Market | null>(null)
+  const [shareStatus, setShareStatus] = useState('')
 
   const results = useMemo(
     () => filterMarkets({ markets, query, dateFilter, favoritesOnly, favorites, location, radius }),
@@ -60,6 +65,44 @@ export default function App() {
       () => setLocationStatus('Standort konnte nicht verwendet werden. Suche stattdessen nach Ort oder PLZ.'),
       { enableHighAccuracy: false, timeout: 8000 },
     )
+  }
+
+  const shareMarket = async (market: Market) => {
+    const text = shareText(market)
+    const url = market.source?.url ?? window.location.href
+    setShareStatus('')
+
+    if (navigator.share) {
+      try {
+        await navigator.share({ title: market.name, text, url })
+        setShareStatus('Markt geteilt.')
+        return
+      } catch (error) {
+        if (error instanceof DOMException && error.name === 'AbortError') return
+      }
+    }
+
+    if (navigator.clipboard?.writeText) {
+      try {
+        await navigator.clipboard.writeText(`${text}\n${url}`)
+        setShareStatus('Termin und Link kopiert.')
+        return
+      } catch {
+        // Continue to the user-facing fallback below.
+      }
+    }
+
+    setShareStatus('Teilen wird von diesem Browser leider nicht unterstützt.')
+  }
+
+  const openDetails = (market: Market) => {
+    setShareStatus('')
+    setSelected(market)
+  }
+
+  const closeDetails = () => {
+    setShareStatus('')
+    setSelected(null)
   }
 
   return (
@@ -183,7 +226,7 @@ export default function App() {
                       <p className="time">{market.startTime}–{market.endTime} Uhr{distance !== null ? ` · ca. ${distance} km` : ''}</p>
                       <div className="tags">{market.categories.map((category) => <span key={category}>{category}</span>)}</div>
                     </div>
-                    <button className="card-action" type="button" onClick={() => setSelected(market)}>Details ansehen <span aria-hidden="true">→</span></button>
+                    <button className="card-action" type="button" onClick={() => openDetails(market)}>Details ansehen <span aria-hidden="true">→</span></button>
                   </article>
                 )
               })}
@@ -217,9 +260,9 @@ export default function App() {
       </footer>
 
       {selected && (
-        <div className="modal-backdrop" role="presentation" onMouseDown={() => setSelected(null)}>
+        <div className="modal-backdrop" role="presentation" onMouseDown={closeDetails}>
           <section className="modal" role="dialog" aria-modal="true" aria-labelledby="modal-title" onMouseDown={(event) => event.stopPropagation()}>
-            <button className="modal-close" type="button" aria-label="Details schließen" onClick={() => setSelected(null)}>×</button>
+            <button className="modal-close" type="button" aria-label="Details schließen" onClick={closeDetails}>×</button>
             {selected.source ? <span className="verified-badge">✓ Verifiziert</span> : <span className="demo-badge">Demo-Termin</span>}
             <h2 id="modal-title">{selected.name}</h2>
             <p className="modal-lead">{selected.note}</p>
@@ -234,7 +277,11 @@ export default function App() {
                 </div>
               )}
             </dl>
-            <a className="primary-button route-button" href={routeUrl(selected)} target="_blank" rel="noreferrer">Route öffnen</a>
+            <div className="modal-actions">
+              <a className="primary-button route-button" href={routeUrl(selected)} target="_blank" rel="noreferrer">Route öffnen</a>
+              <button className="share-button" type="button" onClick={() => void shareMarket(selected)}>Termin teilen</button>
+            </div>
+            <p className="share-status" aria-live="polite">{shareStatus}</p>
             {selected.source ? (
               <p className="verification-note">Quelle zuletzt am {formatVerifiedAt(selected.source.verifiedAt)} geprüft. Änderungen durch den Veranstalter sind weiterhin möglich.</p>
             ) : (
