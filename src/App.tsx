@@ -13,7 +13,11 @@ function routeUrl(market: Market) {
 }
 
 function formatVerifiedAt(value: string) {
-  return new Intl.DateTimeFormat('de-DE').format(new Date(`${value}T12:00:00`))
+  return new Intl.DateTimeFormat('de-DE', {
+    day: '2-digit',
+    month: '2-digit',
+    year: 'numeric',
+  }).format(new Date(`${value}T12:00:00`))
 }
 
 export default function App() {
