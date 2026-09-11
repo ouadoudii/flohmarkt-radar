@@ -28,7 +28,7 @@ describe('calendar export', () => {
     const uri = marketCalendarDataUri(market)
     const ics = decodeURIComponent(uri.split(',', 2)[1] ?? '')
 
-    expect(uri).toStartWith('data:text/calendar;charset=utf-8,')
+    expect(uri.startsWith('data:text/calendar;charset=utf-8,')).toBe(true)
     expect(ics).toContain('DTSTART:20260912T090000')
     expect(ics).toContain('DTEND:20260912T170000')
     expect(ics).toContain('SUMMARY:Flohmarkt beim 48. Radolfzeller Altstadtfest')
