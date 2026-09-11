@@ -1,4 +1,5 @@
 import { useMemo, useState } from 'react'
+import { marketCalendarDataUri, marketCalendarFilename } from './calendar'
 import { buildMarkets } from './markets'
 import { distanceKm, filterMarkets, formatMarketDate } from './logic'
 import { loadFavorites, saveFavorites } from './storage'
@@ -279,6 +280,13 @@ export default function App() {
             </dl>
             <div className="modal-actions">
               <a className="primary-button route-button" href={routeUrl(selected)} target="_blank" rel="noreferrer">Route öffnen</a>
+              <a
+                className="calendar-button"
+                href={marketCalendarDataUri(selected)}
+                download={marketCalendarFilename(selected)}
+              >
+                Zum Kalender
+              </a>
               <button className="share-button" type="button" onClick={() => void shareMarket(selected)}>Termin teilen</button>
             </div>
             <p className="share-status" aria-live="polite">{shareStatus}</p>
