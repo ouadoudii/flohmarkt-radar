@@ -15,9 +15,25 @@ export function distanceKm(a: Coordinates, b: Coordinates) {
   return 2 * radius * Math.asin(Math.sqrt(h))
 }
 
-function isWeekend(date: string) {
-  const day = new Date(`${date}T12:00:00`).getDay()
-  return day === 0 || day === 6
+function isoLocal(date: Date) {
+  const year = date.getFullYear()
+  const month = String(date.getMonth() + 1).padStart(2, '0')
+  const day = String(date.getDate()).padStart(2, '0')
+  return `${year}-${month}-${day}`
+}
+
+function weekendRange(today: Date) {
+  const day = today.getDay()
+  const saturday = new Date(today)
+  saturday.setHours(12, 0, 0, 0)
+
+  if (day === 0) saturday.setDate(today.getDate() - 1)
+  else if (day !== 6) saturday.setDate(today.getDate() + ((6 - day + 7) % 7))
+
+  const sunday = new Date(saturday)
+  sunday.setDate(saturday.getDate() + 1)
+
+  return { start: isoLocal(saturday), end: isoLocal(sunday) }
 }
 
 export function filterMarkets({
@@ -40,7 +56,8 @@ export function filterMarkets({
   today?: Date
 }) {
   const q = normalize(query)
-  const todayIso = today.toISOString().slice(0, 10)
+  const todayIso = isoLocal(today)
+  const weekend = weekendRange(today)
   const byDate = (a: Market, b: Market) => a.date.localeCompare(b.date) || a.startTime.localeCompare(b.startTime)
 
   return markets
@@ -48,7 +65,7 @@ export function filterMarkets({
       const searchable = normalize([market.name, market.city, market.postalCode, market.venue, ...market.categories].join(' '))
       if (q && !searchable.includes(q)) return false
       if (dateFilter === 'today' && market.date !== todayIso) return false
-      if (dateFilter === 'weekend' && !isWeekend(market.date)) return false
+      if (dateFilter === 'weekend' && (market.date < weekend.start || market.date > weekend.end)) return false
       if (favoritesOnly && !favorites.has(market.id)) return false
       if (location && radius !== null) {
         const distance = distanceKm(location, { latitude: market.latitude, longitude: market.longitude })
