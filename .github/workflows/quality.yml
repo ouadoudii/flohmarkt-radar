@@ -32,3 +32,10 @@ jobs:
         run: npx playwright install --with-deps chromium
       - name: Browser tests
         run: npm run test:e2e
+      - name: Publish production artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: production-dist
+          path: dist
+          if-no-files-found: error
+          retention-days: 1
