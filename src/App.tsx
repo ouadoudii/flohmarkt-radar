@@ -30,6 +30,7 @@ export default function App() {
   const [dateFilter, setDateFilter] = useState<DateFilter>('all')
   const [favorites, setFavorites] = useState(() => loadFavorites())
   const [favoritesOnly, setFavoritesOnly] = useState(false)
+  const [verifiedOnly, setVerifiedOnly] = useState(false)
   const [location, setLocation] = useState<Coordinates | null>(null)
   const [radius, setRadius] = useState<number | null>(null)
   const [locationStatus, setLocationStatus] = useState('')
@@ -37,8 +38,8 @@ export default function App() {
   const [shareStatus, setShareStatus] = useState('')
 
   const results = useMemo(
-    () => filterMarkets({ markets, query, dateFilter, favoritesOnly, favorites, location, radius }),
-    [query, dateFilter, favoritesOnly, favorites, location, radius],
+    () => filterMarkets({ markets, query, dateFilter, favoritesOnly, verifiedOnly, favorites, location, radius }),
+    [query, dateFilter, favoritesOnly, verifiedOnly, favorites, location, radius],
   )
 
   const toggleFavorite = (id: string) => {
@@ -182,6 +183,14 @@ export default function App() {
                   </button>
                 ))}
               </div>
+              <button
+                type="button"
+                className={`chip ${verifiedOnly ? 'active' : ''}`}
+                aria-pressed={verifiedOnly}
+                onClick={() => setVerifiedOnly((value) => !value)}
+              >
+                ✓ Nur verifiziert
+              </button>
               <label className="radius-filter">Umkreis
                 <select
                   aria-label="Umkreis"
@@ -237,7 +246,7 @@ export default function App() {
               <span aria-hidden="true">⌕</span>
               <h3>Hier ist gerade nichts dabei.</h3>
               <p>Versuche einen anderen Ort oder setze die Filter zurück.</p>
-              <button type="button" onClick={() => { setQuery(''); setDateFilter('all'); setFavoritesOnly(false); setRadius(null) }}>Filter zurücksetzen</button>
+              <button type="button" onClick={() => { setQuery(''); setDateFilter('all'); setFavoritesOnly(false); setVerifiedOnly(false); setRadius(null) }}>Filter zurücksetzen</button>
             </div>
           )}
         </section>
