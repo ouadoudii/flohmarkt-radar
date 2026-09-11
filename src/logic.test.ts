@@ -34,12 +34,14 @@ describe('market filtering', () => {
     })
 
     expect(result.map((market) => market.id)).toEqual([
-      'radolfzell-altstadtfest-2026',
       'stuttgart-karlsplatz',
+      'radolfzell-altstadtfest-2026',
+      'ludwigsburg-arsenal',
       'esslingen-neckar',
     ])
     expect(result.some((market) => market.id === 'konstanz-georg-elser-platz-2026')).toBe(false)
     expect(result.some((market) => market.id === 'tuebingen-franzviertel')).toBe(false)
+    expect(result.some((market) => market.id === 'reutlingen-markt')).toBe(false)
   })
 
   it('sorts nearby results by distance when location is active', () => {
