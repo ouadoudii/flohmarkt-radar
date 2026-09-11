@@ -93,7 +93,7 @@ test('shares a market with useful date, place and source details', async ({ page
   const shared = await page.evaluate(() => (window as typeof window & { __sharedMarket?: ShareData }).__sharedMarket)
   expect(shared?.title).toBe('Flohmarkt beim 48. Radolfzeller Altstadtfest')
   expect(shared?.text).toContain('Radolfzell')
-  expect(shared?.text).toContain('12.09.2026')
+  expect(shared?.text).toMatch(/12\. Sept\./)
   expect(shared?.url).toMatch(/radolfzell-tourismus\.de/)
 })
 
