@@ -22,7 +22,7 @@ test('favorite survives filter interaction even when localStorage is blocked', a
   await page.reload()
   await page.getByRole('button', { name: /Altstadt-Flohmarkt als Favorit speichern/ }).click()
   await expect(page.locator('.favorites-filter .count-bubble')).toHaveText('1')
-  await page.getByRole('button', { name: /Favoriten/ }).click()
+  await page.getByRole('button', { name: /^Favoriten 1$/ }).click()
   await expect(page.getByRole('heading', { name: 'Altstadt-Flohmarkt' })).toBeVisible()
   await expect(page.locator('.market-card')).toHaveCount(1)
 })
