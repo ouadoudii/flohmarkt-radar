@@ -97,6 +97,22 @@ test('shares a market with useful date, place and source details', async ({ page
   expect(shared?.url).toMatch(/radolfzell-tourismus\.de/)
 })
 
+test('exports a market as a calendar event with the correct details', async ({ page }) => {
+  await page.getByLabel('Wo möchtest du stöbern?').fill('Radolfzell')
+  await page.getByRole('button', { name: /Details ansehen/ }).click()
+
+  const calendar = page.getByRole('link', { name: 'Zum Kalender' })
+  await expect(calendar).toHaveAttribute('download', 'flohmarkt-beim-48-radolfzeller-altstadtfest.ics')
+  const href = await calendar.getAttribute('href')
+  expect(href).toContain('data:text/calendar;charset=utf-8,')
+  const ics = decodeURIComponent(href?.split(',', 2)[1] ?? '')
+  expect(ics).toContain('DTSTART:20260912T090000')
+  expect(ics).toContain('DTEND:20260912T170000')
+  expect(ics).toContain('SUMMARY:Flohmarkt beim 48. Radolfzeller Altstadtfest')
+  expect(ics).toContain('Radolfzell am Bodensee')
+  expect(ics).toContain('radolfzell-tourismus.de')
+})
+
 test('shows a useful empty state and can recover', async ({ page }) => {
   await page.getByLabel('Wo möchtest du stöbern?').fill('Nirgendwohausen')
   await expect(page.getByRole('heading', { name: 'Hier ist gerade nichts dabei.' })).toBeVisible()
