@@ -1,14 +1,23 @@
 import { useMemo, useState } from 'react'
-import { buildDemoMarkets } from './markets'
+import { buildMarkets } from './markets'
 import { distanceKm, filterMarkets, formatMarketDate } from './logic'
 import { loadFavorites, saveFavorites } from './storage'
 import type { Coordinates, DateFilter, Market } from './types'
+import './verification.css'
 
-const markets = buildDemoMarkets()
+const markets = buildMarkets()
 
 function routeUrl(market: Market) {
   const destination = encodeURIComponent(`${market.venue}, ${market.postalCode} ${market.city}`)
   return `https://www.google.com/maps/dir/?api=1&destination=${destination}`
+}
+
+function formatVerifiedAt(value: string) {
+  return new Intl.DateTimeFormat('de-DE', {
+    day: '2-digit',
+    month: '2-digit',
+    year: 'numeric',
+  }).format(new Date(`${value}T12:00:00`))
 }
 
 export default function App() {
@@ -105,7 +114,7 @@ export default function App() {
         </section>
 
         <div className="demo-note" role="note">
-          <strong>Demo-Modus:</strong> Die gezeigten Termine sind Beispieldaten und keine bestätigten Veranstaltungen.
+          <strong>Jetzt mit echten Terminen:</strong> Verifizierte Termine sind mit ✓ markiert und führen direkt zur offiziellen Quelle. Beispieldaten bleiben klar als Demo gekennzeichnet.
         </div>
 
         <section className="discover" aria-labelledby="results-heading">
@@ -152,7 +161,7 @@ export default function App() {
                 const favorite = favorites.has(market.id)
                 const marketDate = new Date(`${market.date}T12:00:00`)
                 return (
-                  <article className="market-card" key={market.id}>
+                  <article className={`market-card ${market.source ? 'verified-market' : ''}`} key={market.id}>
                     <div className="market-card-top">
                       <div className="date-tile" aria-label={formatMarketDate(market.date)}>
                         <span>{formatMarketDate(market.date).split(' ')[0]}</span>
@@ -168,7 +177,7 @@ export default function App() {
                       >♥</button>
                     </div>
                     <div className="market-card-body">
-                      <span className="demo-badge">Demo</span>
+                      {market.source ? <span className="verified-badge">✓ Verifiziert</span> : <span className="demo-badge">Demo</span>}
                       <h3>{market.name}</h3>
                       <p className="place">{market.venue} · {market.postalCode} {market.city}</p>
                       <p className="time">{market.startTime}–{market.endTime} Uhr{distance !== null ? ` · ca. ${distance} km` : ''}</p>
@@ -211,16 +220,26 @@ export default function App() {
         <div className="modal-backdrop" role="presentation" onMouseDown={() => setSelected(null)}>
           <section className="modal" role="dialog" aria-modal="true" aria-labelledby="modal-title" onMouseDown={(event) => event.stopPropagation()}>
             <button className="modal-close" type="button" aria-label="Details schließen" onClick={() => setSelected(null)}>×</button>
-            <span className="demo-badge">Demo-Termin</span>
+            {selected.source ? <span className="verified-badge">✓ Verifiziert</span> : <span className="demo-badge">Demo-Termin</span>}
             <h2 id="modal-title">{selected.name}</h2>
             <p className="modal-lead">{selected.note}</p>
             <dl>
               <div><dt>Wann</dt><dd>{formatMarketDate(selected.date)}, {selected.startTime}–{selected.endTime} Uhr</dd></div>
               <div><dt>Wo</dt><dd>{selected.venue}, {selected.postalCode} {selected.city}</dd></div>
               <div><dt>Sortiment</dt><dd>{selected.categories.join(', ')}</dd></div>
+              {selected.source && (
+                <div>
+                  <dt>Quelle</dt>
+                  <dd><a className="source-link" href={selected.source.url} target="_blank" rel="noreferrer">{selected.source.label}</a></dd>
+                </div>
+              )}
             </dl>
             <a className="primary-button route-button" href={routeUrl(selected)} target="_blank" rel="noreferrer">Route öffnen</a>
-            <p className="verification-note">Vor der Anfahrt bitte den Termin beim Veranstalter verifizieren. Diese MVP-Daten sind nur zur Produktdemonstration gedacht.</p>
+            {selected.source ? (
+              <p className="verification-note">Quelle zuletzt am {formatVerifiedAt(selected.source.verifiedAt)} geprüft. Änderungen durch den Veranstalter sind weiterhin möglich.</p>
+            ) : (
+              <p className="verification-note">Vor der Anfahrt bitte den Termin beim Veranstalter verifizieren. Diese Daten dienen nur zur Produktdemonstration.</p>
+            )}
           </section>
         </div>
       )}

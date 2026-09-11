@@ -1,3 +1,9 @@
+export type MarketSource = {
+  label: string
+  url: string
+  verifiedAt: string
+}
+
 export type Market = {
   id: string
   name: string
@@ -11,7 +17,8 @@ export type Market = {
   endTime: string
   categories: string[]
   note: string
-  demo: true
+  demo: boolean
+  source?: MarketSource
 }
 
 export type DateFilter = 'all' | 'today' | 'weekend'

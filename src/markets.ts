@@ -9,6 +9,54 @@ function nextWeekday(from: Date, weekday: number, extraWeeks = 0) {
   return date
 }
 
+const verifiedMarkets: Market[] = [
+  {
+    id: 'radolfzell-altstadtfest-2026',
+    name: 'Flohmarkt beim 48. Radolfzeller Altstadtfest',
+    city: 'Radolfzell am Bodensee',
+    postalCode: '78315',
+    venue: 'Obertorstraße / Fürstenbergstraße',
+    latitude: 47.738441,
+    longitude: 8.972074,
+    date: '2026-09-12',
+    startTime: '09:00',
+    endTime: '17:00',
+    categories: ['Vintage', 'Kinder', 'Altstadtfest'],
+    note: 'Offizieller Flohmarkt und Kinderflohmarkt im Rahmen des Radolfzeller Altstadtfests.',
+    demo: false,
+    source: {
+      label: 'Radolfzell Tourismus & Stadtmarketing',
+      url: 'https://www.radolfzell-tourismus.de/de/entdecken-erleben/veranstaltungen/altstadtfest/flohmaerkte',
+      verifiedAt: '2026-09-11',
+    },
+  },
+  {
+    id: 'konstanz-georg-elser-platz-2026',
+    name: 'Flohmarkt am Georg-Elser-Platz',
+    city: 'Konstanz',
+    postalCode: '78467',
+    venue: 'Georg-Elser-Platz',
+    latitude: 47.670258,
+    longitude: 9.177904,
+    date: '2026-09-19',
+    startTime: '14:00',
+    endTime: '18:00',
+    categories: ['Nachbarschaft', 'Secondhand', 'Musik'],
+    note: 'Jährlicher Nachbarschaftsflohmarkt mit musikalischer Begleitung und Bewirtung.',
+    demo: false,
+    source: {
+      label: 'Stadt Konstanz',
+      url: 'https://www.konstanz.de/site/Konstanz-Karriere/node/789556/flohmarkt_auf_dem_georg-elser-platz_2026.html',
+      verifiedAt: '2026-09-11',
+    },
+  },
+]
+
+export function buildVerifiedMarkets(today = new Date()): Market[] {
+  const todayIso = iso(today)
+  return verifiedMarkets.filter((market) => market.date >= todayIso)
+}
+
 export function buildDemoMarkets(today = new Date()): Market[] {
   const tomorrow = new Date(today)
   tomorrow.setDate(today.getDate() + 1)
@@ -94,4 +142,8 @@ export function buildDemoMarkets(today = new Date()): Market[] {
       demo: true,
     },
   ]
+}
+
+export function buildMarkets(today = new Date()): Market[] {
+  return [...buildVerifiedMarkets(today), ...buildDemoMarkets(today)]
 }

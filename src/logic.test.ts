@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest'
 import { filterMarkets, distanceKm, normalize } from './logic'
-import { buildDemoMarkets } from './markets'
+import { buildDemoMarkets, buildMarkets, buildVerifiedMarkets } from './markets'
 
 const today = new Date('2026-09-11T12:00:00')
 const markets = buildDemoMarkets(today)
@@ -41,5 +41,22 @@ describe('market filtering', () => {
     const km = distanceKm({ latitude: 48.7758, longitude: 9.1829 }, { latitude: 48.7407, longitude: 9.3073 })
     expect(km).toBeGreaterThan(8)
     expect(km).toBeLessThan(12)
+  })
+})
+
+describe('verified market data', () => {
+  it('includes source-backed verified markets while they are upcoming', () => {
+    const verified = buildMarkets(today).filter((market) => !market.demo)
+
+    expect(verified.map((market) => market.id)).toEqual([
+      'radolfzell-altstadtfest-2026',
+      'konstanz-georg-elser-platz-2026',
+    ])
+    expect(verified.every((market) => market.source?.url.startsWith('https://'))).toBe(true)
+    expect(verified.every((market) => market.source?.verifiedAt === '2026-09-11')).toBe(true)
+  })
+
+  it('removes verified events after their event date', () => {
+    expect(buildVerifiedMarkets(new Date('2026-09-20T12:00:00'))).toHaveLength(0)
   })
 })
