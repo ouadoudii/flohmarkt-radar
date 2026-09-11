@@ -21,6 +21,7 @@
     "@eslint/js": "latest",
     "@playwright/test": "latest",
     "@testing-library/react": "latest",
+    "@types/node": "latest",
     "@types/react": "latest",
     "@types/react-dom": "latest",
     "@vitejs/plugin-react": "latest",
