@@ -41,6 +41,7 @@ export function filterMarkets({
   query,
   dateFilter,
   favoritesOnly,
+  verifiedOnly = false,
   favorites,
   location,
   radius,
@@ -50,6 +51,7 @@ export function filterMarkets({
   query: string
   dateFilter: DateFilter
   favoritesOnly: boolean
+  verifiedOnly?: boolean
   favorites: Set<string>
   location: Coordinates | null
   radius: number | null
@@ -67,6 +69,7 @@ export function filterMarkets({
       if (dateFilter === 'today' && market.date !== todayIso) return false
       if (dateFilter === 'weekend' && (market.date < weekend.start || market.date > weekend.end)) return false
       if (favoritesOnly && !favorites.has(market.id)) return false
+      if (verifiedOnly && !market.source) return false
       if (location && radius !== null) {
         const distance = distanceKm(location, { latitude: market.latitude, longitude: market.longitude })
         if (distance > radius) return false
