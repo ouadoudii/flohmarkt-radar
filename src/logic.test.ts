@@ -21,6 +21,22 @@ describe('market filtering', () => {
     expect(result.map((market) => market.id)).toEqual(['stuttgart-karlsplatz'])
   })
 
+  it('sorts nearby results by distance when location is active', () => {
+    const result = filterMarkets({
+      markets,
+      query: '',
+      dateFilter: 'all',
+      favoritesOnly: false,
+      favorites: new Set(),
+      location: { latitude: 48.4914, longitude: 9.2107 },
+      radius: 30,
+      today,
+    })
+
+    expect(result[0]?.id).toBe('reutlingen-markt')
+    expect(result[1]?.id).toBe('tuebingen-franzviertel')
+  })
+
   it('calculates plausible distances', () => {
     const km = distanceKm({ latitude: 48.7758, longitude: 9.1829 }, { latitude: 48.7407, longitude: 9.3073 })
     expect(km).toBeGreaterThan(8)
