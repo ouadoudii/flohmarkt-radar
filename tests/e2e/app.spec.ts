@@ -14,6 +14,17 @@ test('understands the product and searches a region', async ({ page }) => {
   await expect(page.getByRole('heading', { name: 'Neckar-Schatzmarkt' })).toHaveCount(0)
 })
 
+test('shows only the current weekend when weekend filter is active', async ({ page }) => {
+  await page.getByRole('button', { name: 'Wochenende' }).click()
+
+  await expect(page.getByRole('heading', { name: 'Flohmarkt beim 48. Radolfzeller Altstadtfest' })).toBeVisible()
+  await expect(page.getByRole('heading', { name: 'Altstadt-Flohmarkt' })).toBeVisible()
+  await expect(page.getByRole('heading', { name: 'Neckar-Schatzmarkt' })).toBeVisible()
+  await expect(page.getByRole('heading', { name: 'Flohmarkt am Georg-Elser-Platz' })).toHaveCount(0)
+  await expect(page.getByRole('heading', { name: 'Franzviertel-Flohmarkt' })).toHaveCount(0)
+  await expect(page.getByRole('heading', { name: 'Reutlinger Fundgrube' })).toHaveCount(0)
+})
+
 test('shows verified markets with their official source', async ({ page }) => {
   await page.getByLabel('Wo möchtest du stöbern?').fill('Radolfzell')
   await expect(page.getByRole('heading', { name: 'Flohmarkt beim 48. Radolfzeller Altstadtfest' })).toBeVisible()
