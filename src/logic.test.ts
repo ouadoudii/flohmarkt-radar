@@ -21,6 +21,26 @@ describe('market filtering', () => {
     expect(result.map((market) => market.id)).toEqual(['stuttgart-karlsplatz'])
   })
 
+  it('can hide demo entries and keep only source-verified markets', () => {
+    const result = filterMarkets({
+      markets: buildMarkets(today),
+      query: '',
+      dateFilter: 'all',
+      favoritesOnly: false,
+      verifiedOnly: true,
+      favorites: new Set(),
+      location: null,
+      radius: null,
+      today,
+    })
+
+    expect(result.map((market) => market.id)).toEqual([
+      'radolfzell-altstadtfest-2026',
+      'konstanz-georg-elser-platz-2026',
+    ])
+    expect(result.every((market) => Boolean(market.source))).toBe(true)
+  })
+
   it('limits weekend results to the current or next weekend only', () => {
     const result = filterMarkets({
       markets: buildMarkets(today),
