@@ -97,7 +97,11 @@ dl { display: grid; gap: 14px; margin: 24px 0; }
 dl div { display: grid; grid-template-columns: 78px 1fr; gap: 12px; border-top: 1px solid var(--line); padding-top: 12px; }
 dt { color: var(--muted); font-size: .8rem; font-weight: 800; text-transform: uppercase; letter-spacing: .06em; }
 dd { margin: 0; font-weight: 650; }
+.modal-actions { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
 .route-button { display: block; text-align: center; }
+.share-button { border: 1px solid var(--green); border-radius: 14px; padding: 13px 16px; background: transparent; color: var(--green); font-weight: 850; cursor: pointer; }
+.share-button:hover { background: #edf1ea; }
+.share-status { min-height: 20px; margin: 8px 0 0; color: var(--green); font-size: .82rem; font-weight: 700; }
 .verification-note { color: #856452; font-size: .78rem; line-height: 1.45; margin: 16px 0 0; }
 
 @media (max-width: 860px) {
@@ -130,4 +134,5 @@ dd { margin: 0; font-weight: 650; }
   .how-it-works { padding: 56px 16px; }
   footer { padding: 24px 16px 36px; flex-direction: column; }
   .modal { padding: 24px 20px; }
+  .modal-actions { grid-template-columns: 1fr; }
 }

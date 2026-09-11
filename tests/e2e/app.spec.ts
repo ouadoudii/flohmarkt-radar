@@ -75,6 +75,28 @@ test('opens demo details and exposes a route action', async ({ page }) => {
   await expect(dialog).toHaveCount(0)
 })
 
+test('shares a market with useful date, place and source details', async ({ page }) => {
+  await page.addInitScript(() => {
+    Object.defineProperty(navigator, 'share', {
+      configurable: true,
+      value: async (data: ShareData) => {
+        ;(window as typeof window & { __sharedMarket?: ShareData }).__sharedMarket = data
+      },
+    })
+  })
+  await page.reload()
+  await page.getByLabel('Wo möchtest du stöbern?').fill('Radolfzell')
+  await page.getByRole('button', { name: /Details ansehen/ }).click()
+  await page.getByRole('button', { name: 'Termin teilen' }).click()
+
+  await expect(page.getByText('Markt geteilt.')).toBeVisible()
+  const shared = await page.evaluate(() => (window as typeof window & { __sharedMarket?: ShareData }).__sharedMarket)
+  expect(shared?.title).toBe('Flohmarkt beim 48. Radolfzeller Altstadtfest')
+  expect(shared?.text).toContain('Radolfzell')
+  expect(shared?.text).toMatch(/12\. Sept\./)
+  expect(shared?.url).toMatch(/radolfzell-tourismus\.de/)
+})
+
 test('shows a useful empty state and can recover', async ({ page }) => {
   await page.getByLabel('Wo möchtest du stöbern?').fill('Nirgendwohausen')
   await expect(page.getByRole('heading', { name: 'Hier ist gerade nichts dabei.' })).toBeVisible()
