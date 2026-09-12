@@ -5,9 +5,10 @@ test.beforeEach(async ({ page }) => {
   await page.goto('/')
 })
 
-test('detail dialog is immediately keyboard accessible and closes with Escape', async ({ page }) => {
+test('detail dialog is immediately keyboard accessible, closes with Escape and restores focus', async ({ page }) => {
   await page.getByLabel('Wo möchtest du stöbern?').fill('Stuttgart')
-  await page.getByRole('button', { name: /Details ansehen/ }).click()
+  const detailsButton = page.getByRole('button', { name: /Details ansehen/ })
+  await detailsButton.click()
 
   const dialog = page.getByRole('dialog')
   const closeButton = dialog.getByRole('button', { name: 'Details schließen' })
@@ -17,4 +18,5 @@ test('detail dialog is immediately keyboard accessible and closes with Escape', 
 
   await page.keyboard.press('Escape')
   await expect(dialog).toHaveCount(0)
+  await expect(detailsButton).toBeFocused()
 })
