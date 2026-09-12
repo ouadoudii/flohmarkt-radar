@@ -18,7 +18,8 @@ test('combines place and category terms in one search', async ({ page }) => {
   await page.getByLabel('Wo möchtest du stöbern?').fill('Konstanz Secondhand')
 
   await expect(page.getByRole('heading', { name: 'Flohmarkt am Georg-Elser-Platz' })).toBeVisible()
-  await expect(page.getByText('1 Markt gefunden')).toBeVisible()
+  await expect(page.getByRole('heading', { name: 'Kinder-Basar Litzelstetten' })).toBeVisible()
+  await expect(page.getByText('2 Märkte gefunden')).toBeVisible()
   await expect(page.getByRole('heading', { name: 'Altstadt-Flohmarkt' })).toHaveCount(0)
 })
 
@@ -29,6 +30,7 @@ test('shows only the current weekend when weekend filter is active', async ({ pa
   await expect(page.getByRole('heading', { name: 'Altstadt-Flohmarkt' })).toBeVisible()
   await expect(page.getByRole('heading', { name: 'Neckar-Schatzmarkt' })).toBeVisible()
   await expect(page.getByRole('heading', { name: 'Flohmarkt am Georg-Elser-Platz' })).toHaveCount(0)
+  await expect(page.getByRole('heading', { name: 'Kinder-Basar Litzelstetten' })).toHaveCount(0)
   await expect(page.getByRole('heading', { name: 'Franzviertel-Flohmarkt' })).toHaveCount(0)
   await expect(page.getByRole('heading', { name: 'Reutlinger Fundgrube' })).toHaveCount(0)
 })
