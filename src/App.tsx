@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { marketCalendarDataUri, marketCalendarFilename } from './calendar'
 import { buildMarkets } from './markets'
 import { distanceKm, filterMarkets, formatMarketDate } from './logic'
@@ -36,6 +36,20 @@ export default function App() {
   const [locationStatus, setLocationStatus] = useState('')
   const [selected, setSelected] = useState<Market | null>(null)
   const [shareStatus, setShareStatus] = useState('')
+
+  useEffect(() => {
+    if (!selected) return
+
+    const closeOnEscape = (event: KeyboardEvent) => {
+      if (event.key === 'Escape') {
+        setShareStatus('')
+        setSelected(null)
+      }
+    }
+
+    document.addEventListener('keydown', closeOnEscape)
+    return () => document.removeEventListener('keydown', closeOnEscape)
+  }, [selected])
 
   const results = useMemo(
     () => filterMarkets({ markets, query, dateFilter, favoritesOnly, verifiedOnly, favorites, location, radius }),
@@ -272,7 +286,7 @@ export default function App() {
       {selected && (
         <div className="modal-backdrop" role="presentation" onMouseDown={closeDetails}>
           <section className="modal" role="dialog" aria-modal="true" aria-labelledby="modal-title" onMouseDown={(event) => event.stopPropagation()}>
-            <button className="modal-close" type="button" aria-label="Details schließen" onClick={closeDetails}>×</button>
+            <button className="modal-close" type="button" aria-label="Details schließen" onClick={closeDetails} autoFocus>×</button>
             {selected.source ? <span className="verified-badge">✓ Verifiziert</span> : <span className="demo-badge">Demo-Termin</span>}
             <h2 id="modal-title">{selected.name}</h2>
             <p className="modal-lead">{selected.note}</p>
