@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
 import { marketCalendarDataUri, marketCalendarFilename } from './calendar'
 import { buildMarkets } from './markets'
 import { distanceKm, filterMarkets, formatMarketDate } from './logic'
@@ -36,6 +36,13 @@ export default function App() {
   const [locationStatus, setLocationStatus] = useState('')
   const [selected, setSelected] = useState<Market | null>(null)
   const [shareStatus, setShareStatus] = useState('')
+  const detailsTriggerRef = useRef<HTMLElement | null>(null)
+
+  const restoreDetailsTriggerFocus = () => {
+    const trigger = detailsTriggerRef.current
+    detailsTriggerRef.current = null
+    window.requestAnimationFrame(() => trigger?.focus())
+  }
 
   useEffect(() => {
     if (!selected) return
@@ -44,6 +51,7 @@ export default function App() {
       if (event.key === 'Escape') {
         setShareStatus('')
         setSelected(null)
+        restoreDetailsTriggerFocus()
       }
     }
 
@@ -112,6 +120,7 @@ export default function App() {
   }
 
   const openDetails = (market: Market) => {
+    detailsTriggerRef.current = document.activeElement instanceof HTMLElement ? document.activeElement : null
     setShareStatus('')
     setSelected(market)
   }
@@ -119,6 +128,7 @@ export default function App() {
   const closeDetails = () => {
     setShareStatus('')
     setSelected(null)
+    restoreDetailsTriggerFocus()
   }
 
   return (
