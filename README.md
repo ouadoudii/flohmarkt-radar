@@ -26,7 +26,7 @@ Der CI-Workflow **Factory Quality Gate** prüft Typecheck, Lint, Unit-Tests, Dep
 
 Das Vercel-Projekt ist per Git-Integration mit `ouadoudii/flohmarkt-radar` verbunden. Produktionsdeployments werden aus dem grünen `main`-Stand erzeugt.
 
-Deployment-Synchronisierung zuletzt am 12. September 2026 über einen vollständig geprüften Pull Request erneut angestoßen, nachdem `main` einem älteren Production-Deployment vorauslief.
+Deployment-Synchronisierung am 12. September 2026 erneut über einen vollständig geprüften Pull Request angestoßen, weil der aktuelle `main`-Commit einem älteren READY-Production-Deployment vorauslief.
 
 ## Daten
 
