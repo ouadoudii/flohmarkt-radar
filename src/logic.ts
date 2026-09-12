@@ -57,7 +57,7 @@ export function filterMarkets({
   radius: number | null
   today?: Date
 }) {
-  const q = normalize(query)
+  const queryTerms = normalize(query).split(/\s+/).filter(Boolean)
   const todayIso = isoLocal(today)
   const weekend = weekendRange(today)
   const byDate = (a: Market, b: Market) => a.date.localeCompare(b.date) || a.startTime.localeCompare(b.startTime)
@@ -65,7 +65,7 @@ export function filterMarkets({
   return markets
     .filter((market) => {
       const searchable = normalize([market.name, market.city, market.postalCode, market.venue, ...market.categories].join(' '))
-      if (q && !searchable.includes(q)) return false
+      if (queryTerms.some((term) => !searchable.includes(term))) return false
       if (dateFilter === 'today' && market.date !== todayIso) return false
       if (dateFilter === 'weekend' && (market.date < weekend.start || market.date > weekend.end)) return false
       if (favoritesOnly && !favorites.has(market.id)) return false

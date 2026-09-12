@@ -16,6 +16,36 @@ describe('market filtering', () => {
     expect(filterMarkets({ markets, query: 'Bücher', dateFilter: 'all', favoritesOnly: false, favorites: new Set(), location: null, radius: null, today })[0]?.city).toBe('Esslingen am Neckar')
   })
 
+  it('matches multiple search terms across different market fields', () => {
+    const result = filterMarkets({
+      markets: buildMarkets(today),
+      query: 'Konstanz Secondhand',
+      dateFilter: 'all',
+      favoritesOnly: false,
+      favorites: new Set(),
+      location: null,
+      radius: null,
+      today,
+    })
+
+    expect(result.map((market) => market.id)).toEqual(['konstanz-georg-elser-platz-2026'])
+  })
+
+  it('requires every search term to match the same market', () => {
+    const result = filterMarkets({
+      markets: buildMarkets(today),
+      query: 'Konstanz Vintage',
+      dateFilter: 'all',
+      favoritesOnly: false,
+      favorites: new Set(),
+      location: null,
+      radius: null,
+      today,
+    })
+
+    expect(result).toHaveLength(0)
+  })
+
   it('limits to favorites', () => {
     const result = filterMarkets({ markets, query: '', dateFilter: 'all', favoritesOnly: true, favorites: new Set(['stuttgart-karlsplatz']), location: null, radius: null, today })
     expect(result.map((market) => market.id)).toEqual(['stuttgart-karlsplatz'])
