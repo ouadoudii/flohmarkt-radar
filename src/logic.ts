@@ -1,7 +1,12 @@
 import type { Coordinates, DateFilter, Market } from './types'
 
 export function normalize(value: string) {
-  return value.toLocaleLowerCase('de-DE').normalize('NFD').replace(/[\u0300-\u036f]/g, '').trim()
+  return value
+    .toLocaleLowerCase('de-DE')
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '')
+    .replace(/ß/g, 'ss')
+    .trim()
 }
 
 export function distanceKm(a: Coordinates, b: Coordinates) {
