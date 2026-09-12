@@ -14,6 +14,14 @@ test('understands the product and searches a region', async ({ page }) => {
   await expect(page.getByRole('heading', { name: 'Neckar-Schatzmarkt' })).toHaveCount(0)
 })
 
+test('combines place and category terms in one search', async ({ page }) => {
+  await page.getByLabel('Wo möchtest du stöbern?').fill('Konstanz Secondhand')
+
+  await expect(page.getByRole('heading', { name: 'Flohmarkt am Georg-Elser-Platz' })).toBeVisible()
+  await expect(page.getByText('1 Markt gefunden')).toBeVisible()
+  await expect(page.getByRole('heading', { name: 'Altstadt-Flohmarkt' })).toHaveCount(0)
+})
+
 test('shows only the current weekend when weekend filter is active', async ({ page }) => {
   await page.getByRole('button', { name: 'Wochenende' }).click()
 
