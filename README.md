@@ -26,9 +26,11 @@ Der CI-Workflow **Factory Quality Gate** prüft Typecheck, Lint, Unit-Tests, Dep
 
 Das Vercel-Projekt ist per Git-Integration mit `ouadoudii/flohmarkt-radar` verbunden. Produktionsdeployments werden aus dem grünen `main`-Stand erzeugt.
 
+Deployment-Synchronisierung zuletzt am 12. September 2026 über einen vollständig geprüften Pull Request erneut angestoßen, nachdem `main` einem älteren Production-Deployment vorauslief.
+
 ## Daten
 
-`src/markets.ts` enthält ausschließlich synthetische Beispieldaten. Sie sind in der UI als **Demo** markiert und dürfen nicht als echte Veranstaltungstermine interpretiert werden. Vor einem öffentlichen Produktlaunch wird eine verifizierte Live-Datenquelle angebunden.
+`src/markets.ts` enthält synthetische Beispieldaten und zusätzlich explizit verifizierte Termine mit Quellenangabe. Demo-Einträge sind in der UI als **Demo** markiert und dürfen nicht mit den verifizierten Veranstaltungsterminen verwechselt werden.
 
 ## Sicherheit
 
