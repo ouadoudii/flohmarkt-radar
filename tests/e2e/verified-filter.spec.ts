@@ -8,12 +8,13 @@ test('filters the discovery list to verified markets only', async ({ page }) => 
   await verifiedOnly.click()
 
   await expect(verifiedOnly).toHaveAttribute('aria-pressed', 'true')
-  await expect(page.getByText('2 Märkte gefunden')).toBeVisible()
+  await expect(page.getByText('3 Märkte gefunden')).toBeVisible()
   await expect(page.getByRole('heading', { name: 'Flohmarkt beim 48. Radolfzeller Altstadtfest' })).toBeVisible()
   await expect(page.getByRole('heading', { name: 'Flohmarkt am Georg-Elser-Platz' })).toBeVisible()
+  await expect(page.getByRole('heading', { name: 'Kinder-Basar Litzelstetten' })).toBeVisible()
   await expect(page.locator('.demo-badge')).toHaveCount(0)
 
   await verifiedOnly.click()
   await expect(verifiedOnly).toHaveAttribute('aria-pressed', 'false')
-  expect(await page.locator('.market-card').count()).toBeGreaterThan(2)
+  expect(await page.locator('.market-card').count()).toBeGreaterThan(3)
 })

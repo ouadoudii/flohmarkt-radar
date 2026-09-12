@@ -28,7 +28,10 @@ describe('market filtering', () => {
       today,
     })
 
-    expect(result.map((market) => market.id)).toEqual(['konstanz-georg-elser-platz-2026'])
+    expect(result.map((market) => market.id)).toEqual([
+      'konstanz-georg-elser-platz-2026',
+      'konstanz-litzelstetten-kinder-basar-2026',
+    ])
   })
 
   it('requires every search term to match the same market', () => {
@@ -67,6 +70,7 @@ describe('market filtering', () => {
     expect(result.map((market) => market.id)).toEqual([
       'radolfzell-altstadtfest-2026',
       'konstanz-georg-elser-platz-2026',
+      'konstanz-litzelstetten-kinder-basar-2026',
     ])
     expect(result.every((market) => Boolean(market.source))).toBe(true)
   })
@@ -90,6 +94,7 @@ describe('market filtering', () => {
       'esslingen-neckar',
     ])
     expect(result.some((market) => market.id === 'konstanz-georg-elser-platz-2026')).toBe(false)
+    expect(result.some((market) => market.id === 'konstanz-litzelstetten-kinder-basar-2026')).toBe(false)
     expect(result.some((market) => market.id === 'tuebingen-franzviertel')).toBe(false)
     expect(result.some((market) => market.id === 'reutlingen-markt')).toBe(false)
   })
@@ -124,12 +129,17 @@ describe('verified market data', () => {
     expect(verified.map((market) => market.id)).toEqual([
       'radolfzell-altstadtfest-2026',
       'konstanz-georg-elser-platz-2026',
+      'konstanz-litzelstetten-kinder-basar-2026',
     ])
     expect(verified.every((market) => market.source?.url.startsWith('https://'))).toBe(true)
-    expect(verified.every((market) => market.source?.verifiedAt === '2026-09-11')).toBe(true)
+    expect(verified.map((market) => market.source?.verifiedAt)).toEqual([
+      '2026-09-11',
+      '2026-09-11',
+      '2026-09-12',
+    ])
   })
 
   it('removes verified events after their event date', () => {
-    expect(buildVerifiedMarkets(new Date('2026-09-20T12:00:00'))).toHaveLength(0)
+    expect(buildVerifiedMarkets(new Date('2026-09-27T12:00:00'))).toHaveLength(0)
   })
 })
