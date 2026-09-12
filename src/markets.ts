@@ -50,6 +50,26 @@ const verifiedMarkets: Market[] = [
       verifiedAt: '2026-09-11',
     },
   },
+  {
+    id: 'konstanz-litzelstetten-kinder-basar-2026',
+    name: 'Kinder-Basar Litzelstetten',
+    city: 'Konstanz-Litzelstetten',
+    postalCode: '78465',
+    venue: 'Seeblickhalle, Großherzog-Friedrich-Straße 12a',
+    latitude: 47.71332,
+    longitude: 9.17262,
+    date: '2026-09-26',
+    startTime: '10:00',
+    endTime: '12:00',
+    categories: ['Kinder', 'Basar', 'Secondhand'],
+    note: 'Kinder-Basar in der Seeblickhalle Litzelstetten, im offiziellen Veranstaltungskalender des Konstanzer Ortsteils angekündigt.',
+    demo: false,
+    source: {
+      label: 'Stadt Konstanz – Litzelstetten',
+      url: 'https://www.konstanz.de/litzelstetten-mainau%2CLde/termine',
+      verifiedAt: '2026-09-12',
+    },
+  },
 ]
 
 export function buildVerifiedMarkets(today = new Date()): Market[] {
