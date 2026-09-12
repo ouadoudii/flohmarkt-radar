@@ -22,6 +22,10 @@ npm run quality
 
 Der CI-Workflow **Factory Quality Gate** prüft Typecheck, Lint, Unit-Tests, Dependency Audit, Production Build und reale Chromium-Flows auf Desktop und Mobile.
 
+## Deployment
+
+Das Vercel-Projekt ist per Git-Integration mit `ouadoudii/flohmarkt-radar` verbunden. Produktionsdeployments werden aus dem grünen `main`-Stand erzeugt.
+
 ## Daten
 
 `src/markets.ts` enthält ausschließlich synthetische Beispieldaten. Sie sind in der UI als **Demo** markiert und dürfen nicht als echte Veranstaltungstermine interpretiert werden. Vor einem öffentlichen Produktlaunch wird eine verifizierte Live-Datenquelle angebunden.
